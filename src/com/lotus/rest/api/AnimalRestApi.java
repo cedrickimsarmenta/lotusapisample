@@ -56,7 +56,7 @@ public class AnimalRestApi {
 	@Path("{name}")
 	@DELETE
 	@Produces("application/json")
-	public Response update(@PathParam("name") String name) throws JSONException {
+	public Response delete(@PathParam("name") String name) throws JSONException {
 		JSONObject jsonObject = new JSONObject();
 		
 		try {
@@ -78,6 +78,9 @@ public class AnimalRestApi {
 			@FormParam("energy") int energy, @FormParam("species") String species) throws JSONException {
 		JSONObject jsonObject = new JSONObject();
 		
+		if(name == null) {
+			return Response.status(400).entity("bad request").build();
+		}
 		
 		try {
 			Animal animal = animalDAO.getByName(name);
