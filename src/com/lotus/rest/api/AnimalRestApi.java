@@ -27,6 +27,7 @@ import com.lotus.rest.domain.Animal;
 @Path("/animal")
 public class AnimalRestApi {
 	private AnimalDAO animalDAO = AnimalOJDBDAO.getInstance();
+	
 	@GET
 	@Produces("application/json")
 	public Response list() throws JSONException, JsonGenerationException, JsonMappingException, IOException {
@@ -65,7 +66,7 @@ public class AnimalRestApi {
 			jsonObject.put("success", true);
 		} catch (Exception e) {
 			jsonObject.put("success", false);
-			jsonObject.put("errorMessage", e.getMessage());
+			jsonObject.put("errorMessage", "cannot delete animal");
 		}
 
 		return Response.status(200).entity(jsonObject.toString()).build();
@@ -79,25 +80,18 @@ public class AnimalRestApi {
 		JSONObject jsonObject = new JSONObject();
 		
 		if(name == null) {
-			return Response.status(400).entity("bad request").build();
+			jsonObject.put("error", "bad request, name parameter is required");
+			return Response.status(400).entity(jsonObject.toString()).build();
 		}
 		
 		try {
-			Animal animal = animalDAO.getByName(name);
-			if(animal == null) {
-				animal = new Animal();
-			}
-			
-			animal.setAlive(alive);
-			animal.setName(name);
-			animal.setSpecies(species);
-			animal.setEnergy(energy);
+			Animal animal = new Animal(name, species, energy, alive);
 			animal.persist();
 			
 			jsonObject.put("success", true);
 		} catch (Exception e) {
 			jsonObject.put("success", false);
-			jsonObject.put("errorMessage", e.getMessage());
+			jsonObject.put("errorMessage", "Cannot save animal.");
 		}
 
 		return Response.status(200).entity(jsonObject.toString()).build();

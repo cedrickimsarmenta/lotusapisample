@@ -105,6 +105,8 @@ public class AnimalOJDBDAO implements AnimalDAO {
 				e1.printStackTrace();
 			}
 			e.printStackTrace();
+
+			throw new RuntimeException("Data error: " + e.getMessage());
 		} finally {
 
 			if(statement != null) {
